@@ -57,7 +57,7 @@ function Base.(:+)(a::Variance, x::Real)
   N = a.N + 1.0
   Δ = x - a.M
   δ = Δ / N
-  ξ = Δ * (N - 1.0)
+  ξ = Δ * a.N
   M = a.M + δ
   V = a.V + δ*ξ
   Variance(N, M, V)
@@ -67,7 +67,7 @@ function Base.(:+)(a::Variance, b::Variance)
   N = a.N + b.N
   Δ = b.M - a.M
   δ = Δ / N
-  ξ = Δ * a.N * b.N
+  ξ = Δ * (a.N*b.N)
   M = a.M + b.N*δ
   V = a.V + b.V + δ*ξ
   Variance(N, M, V)
@@ -105,11 +105,11 @@ function Base.(:+)(a::Moments, x::Real)
   δ = Δ / N
   δ² = δ * δ
   δ³ = δ² * δ
-  ξ = Δ * (N - 1.0)
+  ξ = Δ * a.N
   M = a.M + δ
   V = a.V + δ*ξ
-  S = a.S + δ²*ξ*(N - 2.0) - 3.0*δ*a.V
-  K = a.K + δ³*ξ*(N*N - 3.0*N + 3.0) + 6.0*δ²*a.V - 4.0*δ*a.S
+  S = a.S + δ²*ξ*(a.N - 1.0) - 3.0*δ*a.V
+  K = a.K + δ³*ξ*(a.N*a.N - a.N + 1.0) + 6.0*δ²*a.V - 4.0*δ*a.S
   Moments(N, M, V, S, K)
 end
 
@@ -119,7 +119,7 @@ function Base.(:+)(a::Moments, b::Moments)
   δ = Δ / N
   δ² = δ * δ
   δ³ = δ² * δ
-  ξ = Δ * a.N * b.N
+  ξ = Δ * (a.N*b.N)
   M = a.M + b.N*δ
   V = a.V + b.V + δ*ξ
   S = a.S + b.S + δ²*ξ*(a.N - b.N) + 3.0*δ*(a.N*b.V - b.N*a.V)
